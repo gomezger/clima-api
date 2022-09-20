@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import 'jest';
 import { container } from "tsyringe";
 import { IWeatherRepository } from './IWeatherRepository';
-import { registerDependecies } from '../../../utils/registerDependecies';
+import { registerDependecies } from '../../../../utils/registerDependecies';
 registerDependecies();
 
 describe('IWeatherRepository', () => {

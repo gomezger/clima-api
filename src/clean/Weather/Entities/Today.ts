@@ -1,7 +1,8 @@
 export class TodayWeather {
-    date: Date;
-    temperature: string;
+    date: string;
+    temperature: number;
     skyStatus: string;
-    humidity: string;
-    thermalSensation: string;
+    humidity: number;
+    thermalSensation: number;
+    city: String;
 }
