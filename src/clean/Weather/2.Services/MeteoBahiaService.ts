@@ -3,6 +3,7 @@ import { singleton, inject } from "tsyringe";
 import { IWeatherService } from "./IWeatherService";
 import { IWeatherRepository } from "../3.Repositories/Weather/IWeatherRepository";
 import { IScraperRepository } from "../3.Repositories/Scraper/IScraperRepository";
+import { removeAccents } from "../../../utils/removeAccents";
 
 @singleton()
 export class MeteoBahiaService implements IWeatherService {
@@ -14,6 +15,14 @@ export class MeteoBahiaService implements IWeatherService {
 
     async getTodayWeather(city: string): Promise<TodayWeather | null> {
         try {
+
+            // verifico que la ciudad existe
+            const cities = await this.getAllCities();
+            if(cities === null || !cities.find(c => removeAccents(c) === removeAccents(city))){
+                return null;
+            }
+
+            // busco la data de la ciudad
             const html = await this._weather.getCityHtml(city);
             const cityResult = this._scraper.getTextByTag('.titulo lg > b', html);
             const temperature = this._scraper.getTextByTag('.redondeado div #principal1col div p > b', html).substring(0, 4);
