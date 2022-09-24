@@ -1,7 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import { container } from "tsyringe";
-import { PruebaController } from './clean/Prueba/Controllers/PruebaController';
 import { WeatherController } from './clean/Weather/1. Controllers/WeatherController';
 
 export class App {
@@ -20,13 +19,15 @@ export class App {
     public listen(): void {
         const port: string = process.env.PORT ?? '3000';
         this.getExpressApp().listen(port, () => {
-            console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+            console.log(`⚡️[server]: Server is running at http://localhost:${port}`); 
         });
     }
 
     private routerResgister(): void {
-        this.getExpressApp().use('/api/prueba/', container.resolve<PruebaController>(PruebaController).registerRoutes());
-        this.getExpressApp().use('/api/weather/', container.resolve<WeatherController>(WeatherController).registerRoutes());
+        this.getExpressApp().use('/api/weather', container.resolve<WeatherController>(WeatherController).registerRoutes());
+        this.getExpressApp().get('**', (req: Request, res: Response) => {
+            res.status(404).send('Ok. What are you doing here?');
+        });
     }
     
 }

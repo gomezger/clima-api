@@ -1,8 +1,9 @@
 import { ExpressController } from "../../../utils/Controller";
 import { Request, Response, Router } from 'express';
-import { inject } from "tsyringe";
+import { container, inject, singleton } from "tsyringe";
 import { IWeatherService } from "../2.Services/IWeatherService";
 
+@singleton()
 export class WeatherController extends ExpressController{
 
     constructor(
@@ -13,16 +14,35 @@ export class WeatherController extends ExpressController{
 
     registerRoutes(): Router {
         const router = Router();
-        router.get('city/:city', this.getWeatherCity);
+        router.route('/cities').get(this.getAllCities);
+        router.route('/city/:city').get(this.getWeatherCity);
         return router;
     }
 
     private async getWeatherCity(req: Request, res: Response): Promise<Response> {
-        const result = await this._weather.getTodayWeather(req.params.city);
-        if(result === null) {
-            return res.status(404).send('City don\'t found');
+        try{
+            const weather = container.resolve<IWeatherService>(IWeatherService)
+            const result = await weather.getTodayWeather(req.params.city);
+            if(result === null) {
+                return res.status(404).send();
+            }
+            return res.status(200).send(result);
+        }catch(error: unknown){
+            return res.status(500).send()
         }
-        return res.send(result);
+    }
+
+    private async getAllCities(req: Request, res: Response): Promise<Response> {
+        try{
+            const weather = container.resolve<IWeatherService>(IWeatherService)
+            const result = await weather.getAllCities();
+            if(result === null) {
+                return res.status(404).send();
+            }
+            return res.status(200).send(result);
+        }catch(error: unknown){
+            return res.status(500).send()
+        }
     }
 
 

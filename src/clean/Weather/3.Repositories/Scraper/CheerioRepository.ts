@@ -20,16 +20,19 @@ export class CheerioRepository implements IScraperRepository {
         return text;
     }
 
-    // async getAllTextByTag(tag: string, html: string): Promise<string[]> {
-    //     const $: Root = cheerio.load(html);
-    //     const result: Cheerio = $(tag);
-    //     if (result.length === 0) {
-    //         throw new Error('No hay resultado para el tag ' + tag);
-    //     }
-    //     const text: string = result.;
-    //     if (text === '') {
-    //         throw new Error('No hay data en el result: ' + result[0]);
-    //     }
-    //     return text;
-    // }
+    async getAllTextByTag(tag: string, html: string): Promise<string[]> {
+        const $: Root = cheerio.load(html);
+        let result: Cheerio = $(tag);
+        if (result.length === 0) {
+            throw new Error('No hay resultado para el tag ' + tag);
+        }
+        const cities: Array<string> = [];
+
+        while(result.length!==0){
+            cities.push(result.first().text());
+            result = result.next();
+        }
+        
+        return cities;
+    }
 }
