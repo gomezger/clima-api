@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { removeAccents } from '../../../../utils/removeAccents';
 import { IWeatherRepository } from './IWeatherRepository';
 
 export class MeteoBahiaRepository implements IWeatherRepository {
@@ -14,7 +15,7 @@ export class MeteoBahiaRepository implements IWeatherRepository {
     }
 
     async getDetailCityHtml(city: string): Promise<string> {
-        const url = (`https://meteobahia.com.ar/detalla.php?estacion=${city.replaceAll(' ', '%20')}`);
+        const url = (`https://meteobahia.com.ar/detalla.php?estacion=${removeAccents(city.replaceAll(' ', '%20'))}`);
         return this.#getData(`${city}-detail`, url, 60); // expires in 1 hour
     }
 

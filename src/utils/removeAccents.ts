@@ -1,5 +1,5 @@
 export const removeAccents = (s: string): string => {
-    let r = s.toLowerCase();
+    let r = s;
     r = r.replace(new RegExp(/\s/g), "");
     r = r.replace(new RegExp(/[àáâãäå]/g), "a");
     r = r.replace(new RegExp(/[èéêë]/g), "e");
