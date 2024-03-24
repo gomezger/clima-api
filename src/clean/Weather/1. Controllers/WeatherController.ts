@@ -4,11 +4,11 @@ import { container, inject, singleton } from "tsyringe";
 import { IWeatherService } from "../2.Services/IWeatherService";
 
 @singleton()
-export class WeatherController extends ExpressController{
+export class WeatherController extends ExpressController {
 
     constructor(
         @inject(IWeatherService) private _weather: IWeatherService,
-    ) { 
+    ) {
         super();
     }
 
@@ -21,43 +21,43 @@ export class WeatherController extends ExpressController{
     }
 
     private async getDetailWeather(req: Request, res: Response): Promise<Response> {
-        try{
+        try {
             const weather = container.resolve<IWeatherService>(IWeatherService)
             const result = await weather.getDetailWeather(req.params.city);
-            if(result === null) {
+            if (result === null) {
                 return res.status(404).send();
             }
             return res.status(200).send(result);
-        }catch(error: unknown){
+        } catch (error: unknown) {
             return res.status(500).send()
         }
     }
     private async getWeatherCity(req: Request, res: Response): Promise<Response> {
-        try{
+        try {
             const weather = container.resolve<IWeatherService>(IWeatherService)
             const result = await weather.getTodayWeather(req.params.city);
-            if(result === null) {
+            if (result === null) {
                 return res.status(404).send();
             }
             return res.status(200).send(result);
-        }catch(error: unknown){
+        } catch (error: unknown) {
             return res.status(500).send()
         }
     }
 
     private async getAllCities(req: Request, res: Response): Promise<Response> {
-        try{
+        try {
             const weather = container.resolve<IWeatherService>(IWeatherService)
             const result = await weather.getAllCities();
-            if(result === null) {
+            if (result === null) {
                 return res.status(404).send();
             }
             return res.status(200).send(result);
-        }catch(error: unknown){
+        } catch (error: unknown) {
             return res.status(500).send()
         }
     }
 
 
-    
+
 }

@@ -4,9 +4,12 @@ import { container } from "tsyringe";
 import { registerDependecies } from '../../../utils/registerDependecies';
 import { IWeatherService } from './IWeatherService';
 import { registerMock } from '../../../utils/Test';
+import { Builder } from '../../../utils/Test/Builder';
 
-registerDependecies();
-jest.setTimeout(30000);
+beforeEach(()=>{
+    registerDependecies();
+    jest.setTimeout(30000);
+})
 
 
 describe('IWeatherService', () => {
@@ -36,17 +39,44 @@ describe('IWeatherService', () => {
         expect(result).not.toBe(null);
     });
 
-    it('[U] getCity -> city doesn\'t exists', async () => {
+    it('[U] getDetailWeather -> city doesn\'t exists', async () => {
         //arrange
-        const weatherService = container.resolve<IWeatherService>(IWeatherService);
-        weatherService.getAllCities = async () => ['Monte'];
-        registerMock(IWeatherService, weatherService);
+        const builder = new BuilderWeatherService().mockGetAllCities(['Monte']);
 
         //act
-        const result = await weatherService.getTodayWeather('Bahia');
+        const result = await builder.weatherService.getDetailWeather('Bahia');
         
         //assert
         expect(result).toBe(null);
     });
+
+    it('[U] getTodayWeather -> city doesn\'t exists', async () => {
+        //arrange
+        const builder = new BuilderWeatherService().mockGetAllCities(['Monte']);
+
+        //act
+        const result = await builder.weatherService.getTodayWeather('Bahia');
+        
+        //assert
+        expect(result).toBe(null);
+    });
+
+  
 });
+
+
+class BuilderWeatherService extends Builder{
+    weatherService: IWeatherService;
+
+    constructor(){
+        super();
+        this.weatherService = container.resolve<IWeatherService>(IWeatherService);
+    }
+
+    mockGetAllCities(cities: string[]): BuilderWeatherService{
+        this.weatherService.getAllCities = async () => cities;
+        registerMock(IWeatherService, this.weatherService);
+        return this;
+    }
+}
 
